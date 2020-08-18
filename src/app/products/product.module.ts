@@ -22,9 +22,14 @@ import { AuthGuard } from '../auth/auth-guard.service';
     RouterModule.forChild([
       { path: 'products', component: ProductListComponent },
       { path: 'products/:id', component: ProductDetailComponent },
+      // {
+      //   path: 'products/:id/edit',
+      //   canActivate: [AuthGuard],
+      //   canDeactivate: [ProductEditGuard],
+      //   component: ProductEditComponent,
+      // }
       {
         path: 'products/:id/edit',
-        canActivate: [AuthGuard],
         canDeactivate: [ProductEditGuard],
         component: ProductEditComponent,
       }

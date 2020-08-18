@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
+import { AngularFireDatabase } from '@angular/fire/database';
+
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
 
@@ -12,25 +14,32 @@ import { Product } from './product';
 export class ProductService {
   private productsUrl = 'api/products';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private db: AngularFireDatabase) { }
 
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.productsUrl)
+    // return this.http.get<Product[]>(this.productsUrl)
+    //   .pipe(
+    //     // tap(data => console.log(JSON.stringify(data))),
+    //     tap(function(data) {
+    //       // console.log(JSON.stringify(data))
+    //     }),
+    //     catchError(this.handleError)
+    //   );
+    return this.db.list<Product>(this.productsUrl)
+      .snapshotChanges()
       .pipe(
-        // tap(data => console.log(JSON.stringify(data))),
-        tap(function(data) {
-          // console.log(JSON.stringify(data))
-        }),
-        catchError(this.handleError)
+        map(actions =>
+          actions.map(a => ({ key: a.payload.key, ...a.payload.val() }))
+        )
       );
   }
 
-  getProduct(id: number): Observable<Product> {
+  getProduct(productId: number): Observable<Product> {
 
-    if (id === 0) {
+    if (productId === 0) {
       return of(this.initializeProduct());
     }
-    const url = `${this.productsUrl}/${id}`;
+    const url = `${this.productsUrl}/${productId}`;
 
     return this.http.get<Product>(url)
       .pipe(
@@ -39,36 +48,43 @@ export class ProductService {
       );
   }
 
-  createProduct(product: Product): Observable<Product> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    product.id = null;
-    return this.http.post<Product>(this.productsUrl, product, { headers })
-      .pipe(
-        tap(data => console.log('createProduct: ' + JSON.stringify(data))),
-        catchError(this.handleError)
-      );
+  // createProduct(product: Product): Observable<Product> {
+  //   const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+  //   product.id = null;
+  //   return this.http.post<Product>(this.productsUrl, product, { headers })
+  //     .pipe(
+  //       tap(data => console.log('createProduct: ' + JSON.stringify(data))),
+  //       catchError(this.handleError)
+  //     );
+  // }
+
+  createProduct(product: Product) {
+    return this.db.list<Product>(this.productsUrl).push(product);
   }
 
-  deleteProduct(id: number): Observable<{}> {
+  deleteProduct(productId: number): Observable<{}> {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.productsUrl}/${id}`;
+    const url = `${this.productsUrl}/${productId}`;
     return this.http.delete<Product>(url, { headers })
       .pipe(
-        tap(data => console.log('deleteProduct: ' + id)),
+        tap(data => console.log('deleteProduct: ' + productId)),
         catchError(this.handleError)
       );
   }
 
-  updateProduct(product: Product): Observable<Product> {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    const url = `${this.productsUrl}/${product.id}`;
-    return this.http.put<Product>(url, product, { headers })
-      .pipe(
-        tap(() => console.log('updateProduct: ' + product.id)),
-        // Return the product on an update
-        map(() => product),
-        catchError(this.handleError)
-      );
+  updateProduct(product: Product, productId: number) {
+    console.log('product', product);
+    console.log('productId', productId);
+    return this.db.object<any>(this.productsUrl + productId).update(product);
+    // const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    // const url = `${this.productsUrl}/${productId}`;
+    // return this.http.put<Product>(url, product, { headers })
+    //   .pipe(
+    //     tap(() => console.log('updateProduct: ' + productId)),
+    //     // Return the product on an update
+    //     map(() => product),
+    //     catchError(this.handleError)
+    //   );
   }
 
   private handleError(err) {
@@ -90,7 +106,7 @@ export class ProductService {
   private initializeProduct(): Product {
     // Return an initialized object
     return {
-      id: 0,
+      // id: 0,
       productName: null,
       productCode: null,
       tags: [''],

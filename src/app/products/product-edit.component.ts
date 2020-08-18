@@ -11,6 +11,7 @@ import { ProductService } from './product.service';
 import { NumberValidators } from '../shared/number.validator';
 import { GenericValidator } from '../shared/generic-validator';
 
+
 @Component({
   templateUrl: './product-edit.component.html'
 })
@@ -23,6 +24,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
 
   product: Product;
   private sub: Subscription;
+  id;
 
   // Use with the generic validation message class
   displayMessage: { [key: string]: string } = {};
@@ -37,6 +39,9 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
               private route: ActivatedRoute,
               private router: Router,
               private productService: ProductService) {
+
+    this.id = this.route.snapshot.paramMap.get('id');
+
 
     // Defines all of the validation messages for the form.
     // These could instead be retrieved from a file or database.
@@ -121,9 +126,7 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
     }
     this.product = product;
 
-    console.log('product', product);
-
-    if (this.product.id === 0) {
+    if (this.id === 0) {
       this.pageTitle = 'Add Product';
     } else {
       this.pageTitle = `Edit Product: ${this.product.productName}`;
@@ -140,12 +143,12 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   deleteProduct(): void {
-    if (this.product.id === 0) {
+    if (this.id === 0) {
       // Don't delete, it was never saved.
       this.onSaveComplete();
     } else {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
-        this.productService.deleteProduct(this.product.id)
+        this.productService.deleteProduct(this.id)
           .subscribe({
             next: () => this.onSaveComplete(),
             error: err => this.errorMessage = err
@@ -157,20 +160,29 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
   saveProduct(): void {
     if (this.productForm.valid) {
       if (this.productForm.dirty) {
-        const p = { ...this.product, ...this.productForm.value };
+        // const p = { ...this.product, ...this.productForm.value };
 
-        if (p.id === 0) {
-          this.productService.createProduct(p)
-            .subscribe({
-              next: () => this.onSaveComplete(),
-              error: err => this.errorMessage = err
-            });
+        // console.log('p',p);
+
+        if (this.id) {
+          this.productService.createProduct(this.productForm.value);
+
+            // .then(this.onSaveComplete);
+
+            // .subscribe({
+            //   next: () => this.onSaveComplete(),
+            //   error: err => this.errorMessage = err
+            // });
         } else {
-          this.productService.updateProduct(p)
-            .subscribe({
-              next: () => this.onSaveComplete(),
-              error: err => this.errorMessage = err
-            });
+          // this.productService.update(this.id, this.f.value);
+          this.productService.updateProduct(this.product, this.productForm.value);
+
+            // .then(this.onSaveComplete);
+
+            // .subscribe({
+            //   next: () => this.onSaveComplete(),
+            //   error: err => this.errorMessage = err
+            // });
         }
       } else {
         this.onSaveComplete();
@@ -178,11 +190,13 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
     } else {
       this.errorMessage = 'Please correct the validation errors.';
     }
+    this.productForm.reset();
+    this.router.navigate(['/products']);
   }
 
   onSaveComplete(): void {
-    // Reset the form to clear the flags
-    this.productForm.reset();
-    this.router.navigate(['/products']);
+      // Reset the form to clear the flags
+      this.productForm.reset();
+      this.router.navigate(['/products']);
   }
 }

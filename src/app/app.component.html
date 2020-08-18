@@ -10,9 +10,12 @@
       <li class='nav-item'><a class='nav-link' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
             [routerLink]="['/products']">Product List</a>
       </li>
-      <li *ngIf="authService.isAuthenticated()" class='nav-item'><a class='nav-link' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
+      <!-- <li *ngIf="authService.isAuthenticated()" class='nav-item'><a class='nav-link' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
             [routerLink]="['/products/0/edit']">Add Product</a>
-      </li>
+      </li> -->
+      <li class='nav-item'><a class='nav-link' routerLinkActive='active' [routerLinkActiveOptions]="{exact: true}"
+        [routerLink]="['/products/0/edit']">Add Product</a>
+    </li>
     </ul>
 
     <ul class='nav navbar-nav navbar-right'>

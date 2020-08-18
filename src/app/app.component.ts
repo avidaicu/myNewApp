@@ -1,6 +1,6 @@
 import { AuthService } from './auth/auth.service';
 import { Component, OnInit } from '@angular/core';
-import * as firebase from 'firebase';
+// import * as firebase from 'firebase';
 
 @Component({
   selector: 'pm-root',
@@ -15,10 +15,17 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    firebase.initializeApp({
-      apiKey: "AIzaSyCZvYgEzFyrS2JbIIkwZC8wCBixduacig8",
-      authDomain: "mynewapp-7b92a.firebaseapp.com"
-    });
+    // var firebaseConfig = {
+    //   apiKey: "AIzaSyCZvYgEzFyrS2JbIIkwZC8wCBixduacig8",
+    //   authDomain: "mynewapp-7b92a.firebaseapp.com",
+    //   databaseURL: "https://mynewapp-7b92a.firebaseio.com",
+    //   projectId: "mynewapp-7b92a",
+    //   storageBucket: "mynewapp-7b92a.appspot.com",
+    //   messagingSenderId: "68827465216",
+    //   appId: "1:68827465216:web:da1c361dd026d5a9973ae5"
+    // };
+    // // Initialize Firebase
+    // firebase.initializeApp(firebaseConfig);
   }
 
   onLogout() {
