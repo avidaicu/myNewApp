@@ -60,7 +60,9 @@
                 (click)="onBack()">
           <i class="fa fa-chevron-left"></i> Back
         </button>
-        <button *ngIf="authService.isAuthenticated()" class="btn btn-outline-primary"
+        <!-- <button *ngIf="authService.isAuthenticated()"  -->
+        <button
+        class="btn btn-outline-primary"
                 style="width:80px"
                 [routerLink]="['/products', product.id, 'edit']">
           Edit

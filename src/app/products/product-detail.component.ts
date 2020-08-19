@@ -14,6 +14,8 @@ export class ProductDetailComponent implements OnInit {
   errorMessage = '';
   product: Product | undefined;
 
+  id;
+
   constructor(private authService: AuthService,
               private route: ActivatedRoute,
               private router: Router,
@@ -21,19 +23,38 @@ export class ProductDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-    const param = this.route.snapshot.paramMap.get('id');
-    if (param) {
-      const id = +param;
-      this.getProduct(id);
+    this.id = this.route.snapshot.paramMap.get('id');
+
+    if (this.id) {
+      this.productService.getProduct(this.id)
+        .subscribe(p => this.product = p);
     }
+
+    // if (this.id) {
+    //   const id = +this.id;
+    //   this.getProduct(id);
+    // }
   }
 
-  getProduct(id: number) {
-    this.productService.getProduct(id).subscribe({
-      next: product => this.product = product,
-      error: err => this.errorMessage = err
-    });
-  }
+  // ngOnInit() {
+  //   const param = this.route.snapshot.paramMap.get('id');
+  //   if (param) {
+  //     const id = +param;
+  //     this.getProduct(id);
+  //   }
+  // }
+
+  // getProduct(id: number): void {
+  //   this.productService.getProduct(id).subscribe({
+  //     next: product => this.product = product,
+  //     error: err => this.errorMessage = err
+  //   });
+  //   this.productService.getProduct(id)
+  //   .subscribe({
+  //     next: (product: Product) => this.product = product,
+  //     error: err => this.errorMessage = err
+  //   });
+  // }
 
   onBack(): void {
     this.router.navigate(['/products']);

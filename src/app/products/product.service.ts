@@ -4,7 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { AngularFireDatabase } from '@angular/fire/database';
 
 import { Observable, of, throwError } from 'rxjs';
-import { catchError, tap, map } from 'rxjs/operators';
+import { catchError, tap, map, take } from 'rxjs/operators';
 
 import { Product } from './product';
 
@@ -12,7 +12,7 @@ import { Product } from './product';
   providedIn: 'root'
 })
 export class ProductService {
-  private productsUrl = 'api/products';
+  private productsUrl = 'api/products/';
 
   constructor(private http: HttpClient, private db: AngularFireDatabase) { }
 
@@ -34,18 +34,26 @@ export class ProductService {
       );
   }
 
-  getProduct(productId: number): Observable<Product> {
+  getProduct(productId): Observable<Product> {
+
+    console.log('productId', productId);
 
     if (productId === 0) {
       return of(this.initializeProduct());
     }
     const url = `${this.productsUrl}/${productId}`;
 
-    return this.http.get<Product>(url)
-      .pipe(
-        tap(data => console.log('getProduct: ' + JSON.stringify(data))),
-        catchError(this.handleError)
-      );
+    // console.log('url', url);
+
+    // return this.http.get<Product>(url)
+    //   .pipe(
+    //     tap(data => console.log('getProduct: ' + JSON.stringify(data))),
+    //     catchError(this.handleError)
+    //   );
+
+    return this.db.object<any>(this.productsUrl + productId)
+    .valueChanges()
+    .pipe(tap(data => console.log('getProduct: ' + JSON.stringify(data))));
   }
 
   // createProduct(product: Product): Observable<Product> {
@@ -72,7 +80,7 @@ export class ProductService {
       );
   }
 
-  updateProduct(product: Product, productId: number) {
+  updateProduct(productId: number, product: Product) {
     console.log('product', product);
     console.log('productId', productId);
     return this.db.object<any>(this.productsUrl + productId).update(product);

@@ -162,10 +162,11 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
       if (this.productForm.dirty) {
         // const p = { ...this.product, ...this.productForm.value };
 
-        // console.log('p',p);
+        console.log('this.id',this.id);
 
         if (this.id) {
-          this.productService.createProduct(this.productForm.value);
+          this.productService.updateProduct(this.id, this.product);
+
 
             // .then(this.onSaveComplete);
 
@@ -175,7 +176,8 @@ export class ProductEditComponent implements OnInit, AfterViewInit, OnDestroy {
             // });
         } else {
           // this.productService.update(this.id, this.f.value);
-          this.productService.updateProduct(this.product, this.productForm.value);
+          this.productService.createProduct(this.productForm.value);
+
 
             // .then(this.onSaveComplete);
 
