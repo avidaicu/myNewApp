@@ -34,14 +34,14 @@ export class ProductService {
       );
   }
 
-  getProduct(productId): Observable<Product> {
+  getProduct(productId): Observable<any> {
 
-    console.log('productId', productId);
+    // console.log('productId', productId);
 
-    if (productId === 0) {
-      return of(this.initializeProduct());
-    }
-    const url = `${this.productsUrl}/${productId}`;
+    // if (productId === 0) {
+    //   return of(this.initializeProduct());
+    // }
+    // const url = `${this.productsUrl}/${productId}`;
 
     // console.log('url', url);
 

@@ -20,19 +20,21 @@ import { AuthGuard } from '../auth/auth-guard.service';
     ReactiveFormsModule,
     InMemoryWebApiModule.forRoot(ProductData),
     RouterModule.forChild([
-      { path: 'products', component: ProductListComponent },
-      { path: 'products/:id', component: ProductDetailComponent },
+      { path: 'products/new', component: ProductEditComponent },
+      { path: 'products/:id', component: ProductEditComponent },
+      { path: 'products', component: ProductListComponent }
+
       // {
       //   path: 'products/:id/edit',
       //   canActivate: [AuthGuard],
       //   canDeactivate: [ProductEditGuard],
       //   component: ProductEditComponent,
       // }
-      {
-        path: 'products/:id/edit',
-        canDeactivate: [ProductEditGuard],
-        component: ProductEditComponent,
-      }
+      // {
+      //   path: 'products/:id/edit',
+      //   canDeactivate: [ProductEditGuard],
+      //   component: ProductEditComponent,
+      // }
     ])
   ],
   declarations: [
