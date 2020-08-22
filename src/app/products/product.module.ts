@@ -21,7 +21,8 @@ import { AuthGuard } from '../auth/auth-guard.service';
     InMemoryWebApiModule.forRoot(ProductData),
     RouterModule.forChild([
       { path: 'products/new', component: ProductEditComponent },
-      { path: 'products/:id', component: ProductEditComponent },
+      { path: 'products/:id', component: ProductDetailComponent },
+      { path: 'products/:id/edit', component: ProductEditComponent },
       { path: 'products', component: ProductListComponent }
 
       // {

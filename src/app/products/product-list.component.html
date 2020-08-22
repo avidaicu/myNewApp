@@ -59,9 +59,10 @@
               <pm-star [rating]="product.starRating">
               </pm-star>
             </td>
-            <td *ngIf="authService.isAuthenticated()" >
+            <!-- <td *ngIf="authService.isAuthenticated()" > -->
+              <td>
               <button class="btn btn-outline-primary btn-sm"
-                      [routerLink]="['/products', product.key]">
+                      [routerLink]="['/products', product.key, 'edit']">
                 Edit
               </button>
             </td>
